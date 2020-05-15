@@ -3,6 +3,8 @@ import CSSModules from 'browser/lib/CSSModules'
 import styles from './SnippetTab.styl'
 import context from 'browser/lib/context'
 import i18n from 'browser/lib/i18n'
+import copy from 'copy-to-clipboard'
+const path = require('path')
 
 class SnippetTab extends React.Component {
   constructor(props) {
@@ -26,11 +28,36 @@ class SnippetTab extends React.Component {
     this.props.onClick(e)
   }
 
+  notify(title, options) {
+    if (global.process.platform === 'win32') {
+      options.icon = path.join(
+        'file://',
+        global.__dirname,
+        '../../resources/app.png'
+      )
+    }
+    return new window.Notification(title, options)
+  }
+
   handleContextMenu(e) {
     context.popup([
       {
         label: i18n.__('Rename'),
         click: e => this.handleRenameClick(e)
+      },
+      {
+        label: i18n.__('Copy Link'),
+        click: (e) => {
+          const { snippet, noteKey } = this.props;
+          const { name } = snippet;
+          
+          copy(`|snippet|${noteKey}|${name}`);
+
+          this.notify('Snippet Link Saved', {
+            body: 'Use this to inject this snippet in a note!',
+            silent: true
+          })    
+        }
       }
     ])
   }

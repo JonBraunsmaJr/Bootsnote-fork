@@ -811,6 +811,7 @@ class SnippetNoteDetail extends React.Component {
           key={index}
           ref={'tab-' + index}
           snippet={snippet}
+          noteKey={note.key}
           isActive={isActive}
           onClick={e => this.handleTabButtonClick(e, index)}
           onDelete={e => this.handleTabDeleteButtonClick(e, index)}

@@ -568,6 +568,41 @@ class MarkdownPreview extends React.Component {
   }
 
   /**
+   * @description Replace a snippet link with the contents from the actual snippet
+   * @param {string} snippet 
+   * @param {map} noteMap 
+   * @returns {string} snippet contents in a formatted text (code block)
+   */
+  replaceSnippetLink(snippet, noteMap)
+  {
+     // Index: 0 - snippet
+     // Index: 1 - note key
+     // Index: 2 - snippet name
+
+     const parts = snippet.split("|").slice(2);
+
+     if(parts.length < 2) 
+        return snippet;
+
+     const noteKey = parts[0];
+     const snippetName = parts[1];
+
+     const note = noteMap.get(noteKey) || {};
+     const snippets = note["snippets"] || [];
+     const item = snippets.find(x => x.name === snippetName);
+
+     if(item)
+     {
+       const content = item["content"];
+       const mode = item["mode"] || "";
+
+       return "```" + mode + "\n" + content + "\n```";
+     }
+
+     return snippet;
+  }
+
+  /**
    * @description Convert special characters between three ```
    * @param {string[]} splitWithCodeTag Array of HTML strings separated by three ```
    * @returns {string} HTML in which special characters between three ``` have been converted
@@ -846,15 +881,28 @@ class MarkdownPreview extends React.Component {
       storagePath,
       noteKey,
       sanitize,
-      mermaidHTMLLabel
+      mermaidHTMLLabel,
+      noteMap
     } = this.props
     let { value, codeBlockTheme } = this.props
-
     this.refs.root.contentWindow.document.body.setAttribute('data-theme', theme)
     if (sanitize === 'NONE') {
       const splitWithCodeTag = value.split('```')
       value = this.escapeHtmlCharactersInCodeTag(splitWithCodeTag)
     }
+
+    const regexIsSnippet = /(\|snippet\|.*)/g
+    if(regexIsSnippet.test(value))
+    {
+      const snippets = value.match(regexIsSnippet);
+
+      _.forEach(snippets,
+        snippet=>{
+           const text = this.replaceSnippetLink(snippet, noteMap);
+           value = value.replace(snippet, text);
+        });
+    }
+
     const renderedHTML = this.markdown.render(value)
     attachmentManagement.migrateAttachments(value, storagePath, noteKey)
     this.refs.root.contentWindow.document.body.innerHTML = attachmentManagement.fixLocalURLS(

@@ -323,7 +323,8 @@ class MarkdownEditor extends React.Component {
       storageKey,
       noteKey,
       linesHighlighted,
-      RTL
+      RTL,
+      noteMap
     } = this.props
 
     let editorFontSize = parseInt(config.editor.fontSize, 10)
@@ -420,6 +421,7 @@ class MarkdownEditor extends React.Component {
           lineThroughCheckbox={config.preview.lineThroughCheckbox}
           onDrop={e => this.handleDropImage(e)}
           RTL={RTL}
+          noteMap={noteMap}
         />
       </div>
     )

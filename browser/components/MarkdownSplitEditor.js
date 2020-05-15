@@ -176,7 +176,8 @@ class MarkdownSplitEditor extends React.Component {
       noteKey,
       linesHighlighted,
       isStacking,
-      RTL
+      RTL,
+      noteMap
     } = this.props
     let storage
     try {
@@ -317,6 +318,7 @@ class MarkdownSplitEditor extends React.Component {
           allowCustomCSS={config.preview.allowCustomCSS}
           lineThroughCheckbox={config.preview.lineThroughCheckbox}
           RTL={RTL}
+          noteMap={noteMap}
         />
       </div>
     )

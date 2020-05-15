@@ -442,7 +442,8 @@ class MarkdownNoteDetail extends React.Component {
   }
 
   renderEditor() {
-    const { config, ignorePreviewPointerEvents } = this.props
+    const { config, ignorePreviewPointerEvents, data } = this.props
+    const { noteMap } = data;
     const { note, isStacking } = this.state
 
     if (this.state.editorType === 'EDITOR_PREVIEW') {
@@ -459,6 +460,7 @@ class MarkdownNoteDetail extends React.Component {
           isLocked={this.state.isLocked}
           ignorePreviewPointerEvents={ignorePreviewPointerEvents}
           RTL={config.editor.rtlEnabled && this.state.RTL}
+          noteMap={noteMap}
         />
       )
     } else {
@@ -474,6 +476,7 @@ class MarkdownNoteDetail extends React.Component {
           onChange={this.handleUpdateContent}
           ignorePreviewPointerEvents={ignorePreviewPointerEvents}
           RTL={config.editor.rtlEnabled && this.state.RTL}
+          noteMap={noteMap}
         />
       )
     }
