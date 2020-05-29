@@ -587,6 +587,8 @@ class MarkdownPreview extends React.Component {
      const noteKey = parts[0];
      const snippetName = parts[1];
 
+     const numbers = parts.length === 3 ? parts[2].split("-") : [];
+
      const note = noteMap.get(noteKey) || {};
      const snippets = note["snippets"] || [];
      const item = snippets.find(x => x.name === snippetName);
@@ -596,7 +598,21 @@ class MarkdownPreview extends React.Component {
        const content = item["content"];
        const mode = item["mode"] || "";
 
-       return "```" + mode + "\n" + content + "\n```";
+       if(numbers.length === 0)
+          return "```" + mode + "\n" + content + "\n```";
+       else
+       {
+          const lines = content.split("\n");
+          let startIndex = parseInt(numbers[0]);
+          
+          if(startIndex !== 0)
+            startIndex -= 1;
+
+          const endIndex = numbers.length > 1 ? numbers[numbers.length-1] : startIndex;
+          const parts = lines.slice(startIndex, endIndex);
+          
+          return "```" + mode + "\n" + parts.join("\n") + "\n```";
+       }
      }
 
      return snippet;

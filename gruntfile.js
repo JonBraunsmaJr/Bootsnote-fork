@@ -3,7 +3,7 @@ const path = require('path')
 const ChildProcess = require('child_process')
 const packager = require('electron-packager')
 
-const WIN = process.platform === 'win32'
+const WIN = process.platform === 'win32' || process.platorm === "win64"
 
 module.exports = function(grunt) {
   var authCode
